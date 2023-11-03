@@ -1,1 +1,1 @@
-first git text file
+first (add some words) git text file
