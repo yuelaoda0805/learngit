@@ -1,1 +1,2 @@
 first (add some words) git text file
+add a new line
