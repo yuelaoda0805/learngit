@@ -1,0 +1,151 @@
+select * from t1 natural join t2;
+-- ��ѯ���ʴ���2000��Ա����š����������ʡ����ű�š���������
+select e.empno, e.ename, e.sal, e.deptno, d.dname
+from emp e
+inner join dept d on e.deptno = d.deptno
+where e.sal > 2000;
+-- �ȼ���
+select e.empno, e.ename, e.sal, e.deptno, d.dname
+from emp e, dept d
+where e.deptno = d.deptno and e.sal > 2000;
+-- ��ѯѧ����������Ӧ�Ŀγ����ƺͳɼ�
+-- ���ű����Ӳ�ѯʱ���Ƚ��й��������ű�������ӣ������ӵ����ű�
+select st.sname, c.coursename, sc.score
+from students st
+inner join score sc on st.scode = sc.studentid
+inner join course c on c.courseid = sc.courseid;
+-- ��ѯÿ�������µ�Ա����Ϣ
+-- ���ӹ�ϵ��û��Ա���Ĳ���ҲҪչʾ�����ű�������
+-- ��������
+-- ��������
+select d.deptno, d.dname, e.empno, e.ename, e.job, e.sal
+from dept d
+left join emp e on d.deptno = e.deptno;
+select d.deptno, d.dname, e.empno, e.ename, e.job, e.sal
+from emp e
+right join dept d on d.deptno = e.deptno;
+-- ȫ����
+select *
+from t1 full join t2
+on t1.c = t2.c;
+-- �Ӳ�ѯ
+-- ��ѯ���۲����µ�Ա����š�����������������
+-- �ȸ��ݲ��������ҵ����ű��
+-- ���ҵ���Ӧ���ű���µ�Ա����Ϣ
+select deptno from dept where dname = 'SALES';
+select empno, ename, job, sal
+from emp
+where deptno = (select deptno from dept where dname = 'SALES'); 
+
+-- ��ѯ���ʱȱ�����ƽ�����ʸߵ�Ա����Ϣ
+select *
+from emp e2
+where e2.sal > (select avg(e1.sal)
+                from emp e1
+                where e1.deptno = e2.deptno);
+select deptno, avg(sal)
+from emp
+group by deptno;               
+-- ��ѯ����ƽ�����ʸ���30�Ų�����߹��ʵĲ�����Ϣ
+-- 30�Ų��ŵ���߹���
+select max(sal)
+from emp
+where deptno = 30;
+-- �������ŵ�ƽ������
+select deptno, avg(sal)
+from emp
+group by deptno;
+-- �������˵õ����
+select deptno, avg(sal)
+from emp
+group by deptno
+having avg(sal) > (select max(sal)
+                   from emp
+                   where deptno = 30);
+-- ��ѯ���ʵ�������һ�����۵Ĺ��ʣ�������߹��ʣ���Ա����Ϣ
+-- any��������һ�����
+select *
+from emp
+where sal < any(select sal
+             from emp
+             where job = 'SALESMAN');
+-- ��ѯ���ʵ����������۵Ĺ��ʣ�������͹��ʣ���Ա����Ϣ
+-- all�����������
+select *
+from emp
+where sal < all(select sal
+             from emp
+             where job = 'SALESMAN'); 
+-- ��ѯ�ɼ�����80�ֵ�ѧ����Ϣ
+-- in�����ֵ�ĸ������ܳ���1000��
+select studentid
+from score
+where score > 80;
+select *
+from students
+where scode in (select studentid
+                from score
+                where score > 80);
+-- ��ѯû�вμӿ��Ե�ѧ��
+select studentid
+from score;
+select *
+from students
+where scode not in (select studentid
+                    from score);
+-- ��ѯ�ɼ�����90�ֵ�ѧ����Ϣ
+-- ���in�����ֵ�ĸ�������1000������ʹ��existsʵ��
+select *
+from students st
+where exists(select studentid
+             from score sc
+             where sc.studentid = st.scode and sc.score>90); 
+
+-- ��ѯ����Ա�����ϼ�������
+select e1.empno, e1.ename, e1.mgr, e2.empno mgrno, e2.ename mgrname
+from emp e1
+join emp e2
+on e1.mgr = e2.empno;
+select e1.empno, e1.ename, e1.mgr, e2.empno mgrno, e2.ename mgrname
+from emp e1
+left join emp e2
+on e1.mgr = e2.empno;
+
+-- ��ѯemp��ǰ5��Ա������Ϣ
+select *
+from emp
+where rownum <= 5;
+-- ��ѯ������ߵ�ǰ5��Ա������Ϣ
+select * 
+from (select *
+      from emp
+      order by sal desc)
+where rownum <= 5; 
+-- ��ѯ��¼�еĵ�6~10����¼
+-- rownum��Զ��1��ʼ
+select *
+from emp
+where rownum >= 6 and rownum <= 10; 
+-- �̶�rownum
+select *
+from (select *, rownum r1
+      from emp)
+where r1>=6 and r1<=10;
+-- ��ѯ��¼�й�����ߵĵ�6��10����¼
+-- ������
+select *
+from emp
+order by sal desc;
+-- �̶�rownum
+select t1.*, rownum r1
+from (select *
+      from emp
+      order by sal desc) t1  
+-- ���6��10
+select *
+from (select t1.*, rownum r1
+      from (select *
+            from emp
+            order by sal desc) t1) 
+where r1>=6 and r1<=10;                        
+                
