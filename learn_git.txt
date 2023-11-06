@@ -1,3 +1,3 @@
 first (add some words) git text file
 add a new line
-Creating a new branch is quick & simple.
+Creating a new branch is quick AND simple.
